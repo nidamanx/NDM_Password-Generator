@@ -15,8 +15,8 @@ authors:
 repository-code: "https://github.com/nidamanx/NDM_Password-Generator"
 url: "https://github.com/nidamanx/NDM_Password-Generator"
 license: AGPL-3.0-or-later
-version: "1.1.0"
-date-released: "2026-10-06"
+version: "1.1.1"
+date-released: "2026-10-28"
 keywords:
   - python
   - cli

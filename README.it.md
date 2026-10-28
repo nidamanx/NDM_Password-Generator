@@ -5,7 +5,7 @@
 [![Python](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/)
 [![License: AGPL v3+](https://img.shields.io/badge/license-AGPL--3.0--or--later-blue.svg)](https://www.gnu.org/licenses/agpl-3.0.html)
 [![Dependencies](https://img.shields.io/badge/dependencies-none-brightgreen.svg)](#requisiti)
-![Version](https://img.shields.io/badge/version-1.1.0-informational)
+![Version](https://img.shields.io/badge/version-1.1.1-informational)
 
 **NDM Password Generator** è un generatore di password sicure da riga di
 comando: crea **password casuali ad alta entropia, sicure da digitare su
@@ -93,7 +93,7 @@ cd NDM_Password-Generator
 ```
 
 oppure scarica solo lo script di una release (sostituisci `vX.Y.Z` con la
-versione, per esempio `v1.1.0`):
+versione, per esempio `v1.1.1`):
 
 ```bash
 curl -fsSLO https://raw.githubusercontent.com/nidamanx/NDM_Password-Generator/vX.Y.Z/ndm_password-generator.py

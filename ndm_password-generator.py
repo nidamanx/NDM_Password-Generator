@@ -66,8 +66,8 @@ except ImportError as import_error:
     sys.exit(3)
 
 __title__ = "NDM Password Generator"
-__version__ = "1.1.0"
-__release_date__ = "2026-10-06"
+__version__ = "1.1.1"
+__release_date__ = "2026-10-28"
 __author__ = "Nicola Davide Mannarelli - @nidamanx"
 __license__ = "AGPL-3.0-or-later"
 

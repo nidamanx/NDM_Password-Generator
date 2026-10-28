@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-10-28
+
 ### Added
 
 - `README.it.md`: the README in Italian.
@@ -45,5 +47,6 @@ First public release.
 - Requirements check (Python 3.8+, standard-library modules, OS random source);
   exit codes 0 (success), 2 (usage error), 3 (missing requirements).
 
-[Unreleased]: https://github.com/nidamanx/NDM_Password-Generator/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/nidamanx/NDM_Password-Generator/compare/v1.1.1...HEAD
+[1.1.1]: https://github.com/nidamanx/NDM_Password-Generator/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/nidamanx/NDM_Password-Generator/releases/tag/v1.1.0
