@@ -1,0 +1,4 @@
+# Keep Linux line endings: with CRLF the shebang becomes "python3\r" and the
+# script no longer starts.
+* text=auto eol=lf
+*.py text eol=lf

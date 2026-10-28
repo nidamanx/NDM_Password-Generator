@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "If you use this software, or parts of its code, please cite it as below."
+type: software
+title: "NDM Password Generator"
+abstract: >-
+  A single-file, dependency-free Python command-line generator of high-entropy
+  passwords that are safe for mobile keyboards, URLs, shell and config files.
+  Randomness comes from the OS CSPRNG; every password is reported with its exact
+  entropy and a strength label, and a target strength can be requested instead of
+  a length.
+authors:
+  - given-names: "Nicola Davide"
+    family-names: "Mannarelli"
+    alias: "nidamanx"
+repository-code: "https://github.com/nidamanx/NDM_Password-Generator"
+url: "https://github.com/nidamanx/NDM_Password-Generator"
+license: AGPL-3.0-or-later
+version: "1.1.0"
+date-released: "2026-10-06"
+keywords:
+  - python
+  - cli
+  - password
+  - password-generator
+  - entropy
+  - csprng
+  - security

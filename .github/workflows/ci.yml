@@ -3,6 +3,7 @@ name: CI
 on:
   push:
     branches: [main]
+    tags: ['v*']
   pull_request:
 
 permissions:
@@ -12,8 +13,8 @@ jobs:
   lint:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - name: Install linters
@@ -27,11 +28,42 @@ jobs:
       - name: mypy
         run: mypy --strict ndm_password-generator.py
       - name: ruff
-        run: ruff check --ignore EXE001 ndm_password-generator.py
+        run: ruff check ndm_password-generator.py
       - name: bandit
         run: bandit -q ndm_password-generator.py
       - name: vermin (minimum Python 3.8)
         run: vermin --target=3.8- --violations ndm_password-generator.py
+      - name: Version matches in every file
+        # __version__ and __release_date__ are the reference; on a tag push the tag must match too.
+        run: |
+          set -u
+          ver=$(sed -n 's/^__version__ = "\(.*\)"$/\1/p' ndm_password-generator.py)
+          date=$(sed -n 's/^__release_date__ = "\(.*\)"$/\1/p' ndm_password-generator.py)
+          echo "__version__=$ver __release_date__=$date"
+          fail=0
+          expect() {  # file, what, found, wanted
+            if [[ $3 != "$4" ]]; then
+              echo "::error file=$1::$2 is '$3', expected '$4'"; fail=1
+            fi
+          }
+          for f in README.md README.it.md CITATION.cff CHANGELOG.md; do
+            [[ -f $f ]] || { echo "::error file=$f::$f is missing"; fail=1; }
+          done
+          for f in README.md README.it.md; do
+            [[ -f $f ]] || continue
+            expect "$f" "version badge" "$(sed -n 's/.*badge\/version-\([^-]*\)-informational.*/\1/p' "$f")" "$ver"
+          done
+          if [[ -f CITATION.cff ]]; then
+            expect CITATION.cff "version" "$(sed -n 's/^version: "\(.*\)"$/\1/p' CITATION.cff)" "$ver"
+            expect CITATION.cff "date-released" "$(sed -n 's/^date-released: "\(.*\)"$/\1/p' CITATION.cff)" "$date"
+          fi
+          if [[ -f CHANGELOG.md ]]; then
+            expect CHANGELOG.md "latest release" "$(grep -m1 -E '^## \[[0-9]' CHANGELOG.md)" "## [$ver] - $date"
+          fi
+          if [[ $GITHUB_REF_TYPE == tag ]]; then
+            expect ndm_password-generator.py "tag" "$GITHUB_REF_NAME" "v$ver"
+          fi
+          exit "$fail"
 
   smoke:
     runs-on: ubuntu-24.04
@@ -40,15 +72,54 @@ jobs:
       matrix:
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Version and help
+        # Run through the shebang: the file must be executable in the repository
+        run: |
+          ./ndm_password-generator.py --version
+          ./ndm_password-generator.py --help
       - name: Default run
-        run: python ndm_password-generator.py
+        run: ./ndm_password-generator.py
       - name: Quiet mode prints exactly one 16-char password
         run: |
-          out="$(python ndm_password-generator.py -q)"
+          out="$(./ndm_password-generator.py -q)"
           test "${#out}" -eq 16
       - name: Level, symbols and prefix
-        run: python ndm_password-generator.py -l excellent -y 2 -p AB -v
+        run: ./ndm_password-generator.py -l excellent -y 2 -p AB -v
+      - name: Usage errors exit with 2
+        run: |
+          check() {  # args...
+            rc=0; ./ndm_password-generator.py "$@" > /dev/null 2>&1 || rc=$?
+            if [[ $rc -ne 2 ]]; then echo "::error::'$*' exited with $rc, expected 2"; return 1; fi
+          }
+          check --nope
+          check -g 2 -l strong
+          check -q -v
+          check -Y '+='
+          check -p -x
+          check -g 0
+          check -n 1001
+
+  macos:
+    # The Python that comes with macOS (/usr/bin/python3), not one from setup-python
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: System Python
+        run: /usr/bin/python3 --version
+      - name: Version, help and default run
+        run: |
+          /usr/bin/python3 ndm_password-generator.py --version
+          /usr/bin/python3 ndm_password-generator.py --help > /dev/null
+          /usr/bin/python3 ndm_password-generator.py
+      - name: Quiet mode prints exactly one 16-char password
+        run: |
+          out="$(/usr/bin/python3 ndm_password-generator.py -q)"
+          test "${#out}" -eq 16
+      - name: Usage error exits with 2
+        run: |
+          rc=0; /usr/bin/python3 ndm_password-generator.py --nope || rc=$?
+          test "$rc" -eq 2

@@ -1,8 +1,11 @@
 # NDM Password Generator
 
+**English** · [Italiano](README.it.md)
+
 [![Python](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/)
 [![License: AGPL v3+](https://img.shields.io/badge/license-AGPL--3.0--or--later-blue.svg)](https://www.gnu.org/licenses/agpl-3.0.html)
 [![Dependencies](https://img.shields.io/badge/dependencies-none-brightgreen.svg)](#requirements)
+![Version](https://img.shields.io/badge/version-1.1.0-informational)
 
 A single-file, dependency-free command-line generator of **high-entropy
 passwords that are safe for mobile keyboards, URLs, shell and config files**.
@@ -20,14 +23,20 @@ and a target strength level are available.
 
 - [Features](#features)
 - [Requirements](#requirements)
+- [Installation](#installation)
+  - [Updating](#updating)
 - [Quick start](#quick-start)
 - [Usage](#usage)
 - [Understanding the output](#understanding-the-output)
 - [Entropy and strength levels](#entropy-and-strength-levels)
 - [Symbols and risky characters](#symbols-and-risky-characters)
 - [Security notes](#security-notes)
+- [External services contacted](#external-services-contacted)
 - [Things to watch out for](#things-to-watch-out-for)
+- [Checking the script](#checking-the-script)
 - [Exit codes](#exit-codes)
+- [Project layout](#project-layout)
+- [Versioning](#versioning)
 - [Quality checks](#quality-checks)
 - [Disclaimer](#disclaimer)
 - [License](#license)
@@ -67,12 +76,42 @@ If something is missing, the script prints what and exits with code `3`.
 > Python older than 3.7 cannot even parse the file, so the friendly message
 > cannot be shown there.
 
+## Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/nidamanx/NDM_Password-Generator.git
+cd NDM_Password-Generator
+```
+
+or download only the script of a release (replace `vX.Y.Z` with the version,
+for example `v1.1.0`):
+
+```bash
+curl -fsSLO https://raw.githubusercontent.com/nidamanx/NDM_Password-Generator/vX.Y.Z/ndm_password-generator.py
+chmod +x ndm_password-generator.py
+```
+
+The script is executable in the repository; `chmod +x` is needed only for a
+downloaded copy. Without it, run it as `python3 ndm_password-generator.py`.
+To check that your copy is the published one, see
+[Checking the script](#checking-the-script).
+
+### Updating
+
+See [CHANGELOG.md](CHANGELOG.md) for what changed. In a clone:
+
+```bash
+git pull
+```
+
+For a downloaded copy, download the script of the new version again as above.
+The script keeps no settings or files, so there is nothing else to migrate.
+
 ## Quick start
 
 ```bash
-# Download the script, then:
-chmod +x ndm_password-generator.py
-
 # Optional: record a checksum to detect later tampering
 sha256sum ndm_password-generator.py
 
@@ -301,6 +340,12 @@ context.
   character classes present) were run during development. They are sanity
   checks, not a proof of randomness: the guarantee comes from the OS CSPRNG.
 
+## External services contacted
+
+**None.** The script never opens a network connection: it does not check for
+updates, send statistics or download anything. You can confirm it with the
+`strace` command above.
+
 ## Things to watch out for
 
 1. **Use the `Password` line**, not `Readable`. Separators are display-only.
@@ -329,7 +374,8 @@ context.
    specific ones. No symbol set is universally accepted.
 8. **Verify the script's integrity.** If someone replaced `secrets` with a
    seeded `random`, the output would look identical but be predictable. Keep
-   a checksum or a signed git tag, and restrict write permissions on the file.
+   a checksum or a signed git tag, and restrict write permissions on the file
+   (see [Checking the script](#checking-the-script)).
 9. **VMs, snapshots and clones.** Behaviour depends on kernel and hypervisor
    versions. Verify that your environment reseeds the kernel RNG after a
    restore or clone.
@@ -338,6 +384,25 @@ context.
 11. **Levels are minimums.** A level can overshoot into a higher band because
     groups are always whole. Read the `Strength` line.
 
+## Checking the script
+
+The script does not check itself: a modified script could simply lie. Compare
+its SHA-256 with the one of the same version published on GitHub (the version
+is printed by `-V`):
+
+```bash
+./ndm_password-generator.py -V
+sha256sum ndm_password-generator.py
+curl -fsSL https://raw.githubusercontent.com/nidamanx/NDM_Password-Generator/vX.Y.Z/ndm_password-generator.py | sha256sum
+```
+
+The two hashes must be identical. On macOS use `shasum -a 256` instead of
+`sha256sum`. In a clone, `git status` and `git diff vX.Y.Z -- ndm_password-generator.py`
+show any local change.
+
+Read the script before trusting it: it is a single file, and the parts that
+matter for security are `_RNG = secrets.SystemRandom()` and `generate()`.
+
 ## Exit codes
 
 | Code | Meaning |
@@ -345,6 +410,28 @@ context.
 | `0` | Success |
 | `2` | Usage error (invalid or conflicting options) |
 | `3` | Missing requirements (Python version, standard-library module, OS random source) |
+
+## Project layout
+
+```text
+NDM_Password-Generator/
+├── ndm_password-generator.py   the program (single file, standard library only)
+├── README.md                   this file
+├── README.it.md                the same, in Italian
+├── CHANGELOG.md                changes of every release
+├── CITATION.cff                how to cite this software
+├── SECURITY.md                 how to report a vulnerability
+├── LICENSE                     GNU AGPL v3
+└── .github/                    CI workflow and Dependabot
+```
+
+## Versioning
+
+The project follows [Semantic Versioning](https://semver.org/). The version
+and release date are `__version__` and `__release_date__` in the script
+(shown by `-V` and `-h`); every release has a `vX.Y.Z` tag and an entry in
+[CHANGELOG.md](CHANGELOG.md). The CI checks that the version matches in the
+script, both READMEs, `CITATION.cff`, `CHANGELOG.md` and the tag.
 
 ## Quality checks
 
