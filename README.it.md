@@ -7,9 +7,10 @@
 [![Dependencies](https://img.shields.io/badge/dependencies-none-brightgreen.svg)](#requisiti)
 ![Version](https://img.shields.io/badge/version-1.1.0-informational)
 
-Un generatore di password da riga di comando, in un solo file e senza
-dipendenze, che crea **password ad alta entropia sicure da digitare su tastiere
-mobili e da usare in URL, shell e file di configurazione**.
+**NDM Password Generator** è un generatore di password sicure da riga di
+comando: crea **password casuali ad alta entropia, sicure da digitare su
+tastiere mobili e da usare in URL, shell e file di configurazione**, estratte
+dal CSPRNG del sistema operativo. È un solo file Python, senza dipendenze.
 
 Le password sono alfanumeriche per impostazione predefinita (senza caratteri
 che si confondono), divise in gruppi per leggerle facilmente, e **ogni risultato

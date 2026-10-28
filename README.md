@@ -7,8 +7,10 @@
 [![Dependencies](https://img.shields.io/badge/dependencies-none-brightgreen.svg)](#requirements)
 ![Version](https://img.shields.io/badge/version-1.1.0-informational)
 
-A single-file, dependency-free command-line generator of **high-entropy
-passwords that are safe for mobile keyboards, URLs, shell and config files**.
+**NDM Password Generator** is a secure password generator for the command
+line: it creates **high-entropy random passwords that are safe for mobile
+keyboards, URLs, shell and config files**, drawn from the operating system's
+CSPRNG. It is a single Python file with no dependencies.
 
 Passwords are alphanumeric by default (no ambiguous glyphs), grouped for easy
 reading, and **every result comes with a measured entropy and a strength
